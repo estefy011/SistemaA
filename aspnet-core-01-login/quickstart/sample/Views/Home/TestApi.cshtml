@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Test API";
+}
+
+<h1>Test API</h1>
+
+<button id="loadDataButton">Load Data</button>
+<div id="dataDisplayArea">
+    @Html.Raw(ViewBag.Data)
+</div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#loadDataButton").click(function () {
+                $("#dataDisplayArea").html('@Html.Raw(ViewBag.Data)');
+            });
+        });
+    </script>
+}

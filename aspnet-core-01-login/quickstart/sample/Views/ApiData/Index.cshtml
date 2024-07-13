@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "API Data Interaction";
+}
+
+<h1>API Data Interaction</h1>
+
+<button id="loadDataButton">Load Data</button>
+<div id="dataDisplayArea"></div>
+
+<button id="decryptButton">Decrypt</button>
+<div id="decryptedDisplayArea"></div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Manejar la carga de la data cifrada
+            $("#loadDataButton").click(function () {
+                $.ajax({
+                    url: '@Url.Action("GetEncryptedData", "ApiData")',
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            $('#dataDisplayArea').html(response.data);
+                            $('#decryptButton').data('ciphertext', response.data); // Almacenar cifrado para uso posterior
+                        } else {
+                            $('#dataDisplayArea').html('Error: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        $('#dataDisplayArea').html('Error loading data.');
+                    }
+                });
+            });
+
+            // Manejar el descifrado de la data
+            $("#decryptButton").click(function () {
+                var ciphertext = $(this).data('ciphertext'); // Usar data almacenada
+                $.ajax({
+                    url: '@Url.Action("DecryptData", "ApiData")',
+                    type: 'POST',
+                    data: { base64Ciphertext: ciphertext },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#decryptedDisplayArea').html('Decrypted Data: ' + response.decryptedData);
+                        } else {
+                            $('#decryptedDisplayArea').html('Error: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        $('#decryptedDisplayArea').html('Error sending data.');
+                    }
+                });
+            });
+        });
+    </script>
+}
